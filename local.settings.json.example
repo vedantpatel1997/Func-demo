@@ -1,0 +1,30 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "FUNCTIONS_WORKER_RUNTIME_VERSION": "3.13",
+
+    "ACS_CONNECTION_STRING": "endpoint=https://TU_ACS.communication.azure.com/;accesskey=TU_KEY",
+    "ACS_CHANNEL_ID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+
+    "META_VERIFY_TOKEN": "TU_TOKEN_VERIFICACION_SECRETO",
+
+    "LOGIC_APP_ENDPOINT": "https://prod-XX.region.logic.azure.com:443/workflows/.../triggers/.../paths/invoke?...",
+    "LOGIC_APP_TIMEOUT_SECONDS": "10",
+    "LOGIC_APP_RETRY_ATTEMPTS": "1",
+    "LOGIC_APP_RETRY_BACKOFF_SECONDS": "0.2",
+
+    "TENANT_ID": "0",
+    "GS_APP_ID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+
+    "WEBHOOK_MAX_BODY_BYTES": "1048576",
+    "OUTBOUND_MAX_MESSAGE_LENGTH": "4096",
+
+    "APPLICATIONINSIGHTS_CONNECTION_STRING": "InstrumentationKey=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  },
+  "Host": {
+    "CORS": "*",
+    "CORSCredentials": false
+  }
+}
