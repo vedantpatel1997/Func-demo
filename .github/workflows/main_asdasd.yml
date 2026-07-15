@@ -8,7 +8,7 @@ on:
 
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
-  PYTHON_VERSION: '3.11'   # match the Flex app's only supported build version
+  PYTHON_VERSION: '3.14'   # <-- MUST be 3.14 — the only version this Flex app's Oryx builder supports
 
 jobs:
   deploy:
