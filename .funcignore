@@ -1,0 +1,23 @@
+# Files/folders excluded from the deployment package sent to Azure.
+# Honored because the workflow sets `respect-funcignore: true`.
+.git*
+.github/
+.vscode/
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+.pytest_cache/
+.hypothesis/
+
+# Local-only config and docs — never deploy these.
+local.settings.json
+local.settings.json.example
+Ejemplo settings.json
+*.md
+Containerfile
+
+# Test suite and dev-only dependencies are not needed at runtime.
+tests/
+requirements-dev.txt

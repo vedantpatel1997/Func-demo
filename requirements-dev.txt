@@ -1,0 +1,7 @@
+# Dev/test-only dependencies. Installed on CI runners and locally, but NOT on
+# the Function App (excluded via .funcignore). Runtime deps come from requirements.txt.
+-r requirements.txt
+
+# Testing
+pytest==8.3.3
+hypothesis==6.119.4

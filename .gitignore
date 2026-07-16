@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.hypothesis/
+
+# Azure Functions local settings (never commit secrets)
+local.settings.json
+
+# OS / editor
+.vscode/
+.DS_Store
