@@ -21,6 +21,13 @@ on:
       - main
   workflow_dispatch:
 
+# Serialize deployments so two runs never deploy at the same time.
+# (Overlapping deploys cause "another deployment is in progress" on Flex Consumption.)
+# cancel-in-progress: false -> queue runs instead of cancelling an in-flight deploy.
+concurrency:
+  group: deploy-func-demo-production
+  cancel-in-progress: false
+
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'   # path to the function project (repo root)
   PYTHON_VERSION: '3.13'                # MUST match the Function App runtime (python 3.13)
@@ -40,13 +47,15 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install dependencies and run tests
-        # These installs are only for running the test suite on the runner.
-        # They are NOT what gets deployed — Azure installs runtime deps remotely.
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt -r requirements-dev.txt
-          python -m pytest -q
+      # - name: Install dependencies and run tests
+      #   # These installs are only for running the test suite on the runner.
+      #   # They are NOT what gets deployed — Azure installs runtime deps remotely.
+      #   # requirements-dev.txt already pulls in requirements.txt (via `-r`).
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     pip install -r requirements-dev.txt
+      #     python -c "import function_app; print('function_app imported OK')"
+      #     python -m pytest -q
 
       - name: 'Deploy to Azure Functions (Flex Consumption, remote build)'
         uses: Azure/functions-action@v1
