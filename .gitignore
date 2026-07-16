@@ -7,6 +7,9 @@ env/
 .pytest_cache/
 .hypothesis/
 
+# CI-built dependency folder (created by the build-in-CI workflow; never commit)
+.python_packages/
+
 # Azure Functions local settings (never commit secrets)
 local.settings.json
 
