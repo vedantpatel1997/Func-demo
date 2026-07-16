@@ -1,14 +1,3 @@
-# Build-and-ship deployment for a Python Azure Functions app (Flex Consumption).
-#
-# STRATEGY: dependencies are built in CI (GitHub Actions), NOT on the Function App.
-# We vendor the runtime packages into .python_packages/lib/site-packages on the
-# Linux runner, then deploy a ready-to-run package with the platform build DISABLED
-# (remote-build: false). The Function App runs the package as-is and builds nothing.
-#
-# Why this is safe: the runner is Linux x86_64 with the SAME Python (3.13) as the
-# Function App, so pip downloads Linux (manylinux) wheels that run on the platform.
-# PYTHON_VERSION MUST stay equal to the Function App runtime version.
-#
 # Docs:
 #   - functions-action parameters: https://github.com/Azure/functions-action#parameter-reference
 #   - GitHub Actions for Functions:  https://learn.microsoft.com/azure/azure-functions/functions-how-to-github-actions
@@ -29,7 +18,7 @@ concurrency:
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'   # path to the function project (repo root)
   PYTHON_VERSION: '3.13'                # MUST match the Function App runtime (python 3.13)
-  AZURE_FUNCTIONAPP_NAME: 'Func-demo'   # function app name on Azure
+  AZURE_FUNCTIONAPP_NAME: 'func-demo-1'   # function app name on Azure
 
 jobs:
   build-and-deploy:
@@ -69,7 +58,7 @@ jobs:
         with:
           app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5A43E5BCCA7245779EACA83912784B91 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B3CDED9137A540C79F22966068405BF1 }}
           sku: 'flexconsumption'
           remote-build: false          # build happens in CI (above), NOT on the platform
           respect-funcignore: true     # honor .funcignore (do not ship tests/docs/venv)
