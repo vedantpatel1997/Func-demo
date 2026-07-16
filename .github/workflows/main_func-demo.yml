@@ -1,64 +1,64 @@
-# # Docs:
-# #   - functions-action parameters: https://github.com/Azure/functions-action#parameter-reference
-# #   - GitHub Actions for Functions:  https://learn.microsoft.com/azure/azure-functions/functions-how-to-github-actions
+# Docs:
+#   - functions-action parameters: https://github.com/Azure/functions-action#parameter-reference
+#   - GitHub Actions for Functions:  https://learn.microsoft.com/en-us/azure/azure-functions/functions-how-to-github-actions?tabs=linux%2Cpython&pivots=method-template#example-workflow-configuration-file
 
-# name: Build and deploy Python project to Azure Function App - Func-demo
+name: Build and deploy Python project to Azure Function App - Func-demo
 
-# on:
-#   push:
-#     branches:
-#       - main
-#   workflow_dispatch:
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
-# # Serialize deploys so two runs never deploy at once ("another deployment in progress").
-# concurrency:
-#   group: deploy-func-demo-production
-#   cancel-in-progress: false
+# Serialize deploys so two runs never deploy at once ("another deployment in progress").
+concurrency:
+  group: deploy-func-demo-production
+  cancel-in-progress: false
 
-# env:
-#   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'   # path to the function project (repo root)
-#   PYTHON_VERSION: '3.13'                # MUST match the Function App runtime (python 3.13)
-#   AZURE_FUNCTIONAPP_NAME: 'func-demo-1'   # function app name on Azure
+env:
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'   # path to the function project (repo root)
+  PYTHON_VERSION: '3.13'                # MUST match the Function App runtime (python 3.13)
+  AZURE_FUNCTIONAPP_NAME: 'func-demo-1'   # function app name on Azure
 
-# jobs:
-#   build-and-deploy:
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: read   # required for actions/checkout
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read   # required for actions/checkout
 
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-#       - name: Setup Python ${{ env.PYTHON_VERSION }}
-#         uses: actions/setup-python@v5
-#         with:
-#           python-version: ${{ env.PYTHON_VERSION }}
+      - name: Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
-#       # Build the deployment artifact IN CI: install runtime deps into the exact
-#       # folder the Functions Python worker loads from. This makes the package
-#       # self-contained so the platform does not need to build anything.
-#       - name: Build dependencies into .python_packages (build in CI)
-#         shell: bash
-#         run: |
-#           python -m pip install --upgrade pip
-#           pip install --target=".python_packages/lib/site-packages" -r requirements.txt
+      # Build the deployment artifact IN CI: install runtime deps into the exact
+      # folder the Functions Python worker loads from. This makes the package
+      # self-contained so the platform does not need to build anything.
+      - name: Build dependencies into .python_packages (build in CI)
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install --target=".python_packages/lib/site-packages" -r requirements.txt
 
-#       # Smoke-test the artifact we are about to ship: import the app using ONLY the
-#       # vendored packages. If a dependency is missing/incompatible, fail here rather
-#       # than after deployment. (This is the same import that crashed the host before.)
-#       - name: Smoke-test the built package
-#         shell: bash
-#         run: |
-#           PYTHONPATH=".python_packages/lib/site-packages" python -c "import function_app; print('built package imports OK')"
+      # Smoke-test the artifact we are about to ship: import the app using ONLY the
+      # vendored packages. If a dependency is missing/incompatible, fail here rather
+      # than after deployment. (This is the same import that crashed the host before.)
+      - name: Smoke-test the built package
+        shell: bash
+        run: |
+          PYTHONPATH=".python_packages/lib/site-packages" python -c "import function_app; print('built package imports OK')"
 
-#       - name: 'Deploy to Azure Functions (pre-built package, no remote build)'
-#         uses: Azure/functions-action@v1
-#         id: fa
-#         with:
-#           app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-#           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-#           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B3CDED9137A540C79F22966068405BF1 }}
-#           sku: 'flexconsumption'
-#           remote-build: false          # build happens in CI (above), NOT on the platform
-#           respect-funcignore: true     # honor .funcignore (do not ship tests/docs/venv)
+      - name: 'Deploy to Azure Functions (pre-built package, no remote build)'
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B3CDED9137A540C79F22966068405BF1 }}
+          sku: 'flexconsumption'
+          remote-build: false          # build happens in CI (above), NOT on the platform
+          respect-funcignore: true     # honor .funcignore (do not ship tests/docs/venv)
